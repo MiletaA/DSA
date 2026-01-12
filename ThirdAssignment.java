@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
 import edu.princeton.cs.algs4.CC;
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.DirectedDFS;
@@ -11,84 +10,94 @@ import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.TransitiveClosure;
 
 public class ThirdAssignment {
-    static Digraph readDigraph(String path){
+    static Digraph readDigraph(String path) {
         return new Digraph(new In(path));
     }
-    static Graph readGraph(String path){
+
+    static Graph readGraph(String path) {
         return new Graph(new In(path));
     }
-    static List<Integer> sources(Digraph g){
+
+    static List<Integer> sources(Digraph g) {
         List<Integer> res = new ArrayList<>();
-        for(int v = 0; v < g.V(); v++){
-            if(g.indegree(v) == 0)
-                res.add(v);
-        }
-        return res;
-    }
-    static List<Integer> sinks(Digraph g){
-        List<Integer> res = new ArrayList<>();
-        for(int v = 0; v < g.V(); v++){
-            if(g.outdegree(v) == 0)
+        for (int v = 0; v < g.V(); v++) {
+            if (g.indegree(v) == 0)
                 res.add(v);
         }
         return res;
     }
 
-    static boolean canReachAllFrom(Digraph g, int s){
+    static List<Integer> sinks(Digraph g) {
+        List<Integer> res = new ArrayList<>();
+        for (int v = 0; v < g.V(); v++) {
+            if (g.outdegree(v) == 0)
+                res.add(v);
+        }
+        return res;
+    }
+
+    static boolean canReachAllFrom(Digraph g, int s) {
         DirectedDFS dfs = new DirectedDFS(g, s);
-        for(int v = 0 ; v < g.V(); v++){
-            if(!dfs.marked(v))
+        for (int v = 0; v < g.V(); v++) {
+            if (!dfs.marked(v))
                 return false;
         }
         return true;
     }
-    static Integer vertexThatReachesAll(Digraph g){
-        for(int s = 0; s < g.V(); s++){
-            if(canReachAllFrom(g, s))
+
+    static Integer vertexThatReachesAll(Digraph g) {
+        for (int s = 0; s < g.V(); s++) {
+            if (canReachAllFrom(g, s))
                 return s;
         }
         return null;
     }
-    static Integer vertexReachableFromAll(Digraph g){
+
+    static Integer vertexReachableFromAll(Digraph g) {
         Digraph r = g.reverse();
-        for(int t = 0; t < r.V(); t++){
-            if(canReachAllFrom(r, t))
+        for (int t = 0; t < r.V(); t++) {
+            if (canReachAllFrom(r, t))
                 return t;
         }
         return null;
     }
-    static boolean canReturnToSelf(Digraph g, int v){
-        for(int w : g.adj(v)){
-            if(w == v)
+
+    static boolean canReturnToSelf(Digraph g, int v) {
+        for (int w : g.adj(v)) {
+            if (w == v)
                 return true;
         }
         DirectedDFS fromV = new DirectedDFS(g, v);
         DirectedDFS toV = new DirectedDFS(g.reverse(), v);
-        for(int u = 0; u < g.V(); u++){
-            if(u != v && fromV.marked(u) && toV.marked(u))
+        for (int u = 0; u < g.V(); u++) {
+            if (u != v && fromV.marked(u) && toV.marked(u))
                 return true;
         }
         return false;
     }
-    static Digraph transitiveClosureGraph(Digraph g){
+
+    static Digraph transitiveClosureGraph(Digraph g) {
         TransitiveClosure tc = new TransitiveClosure(g);
         Digraph closure = new Digraph(g.V());
-        for(int v = 0; v < g.V(); v++){
-            for(int w = 0; w < g.V(); w++){
-                if(v != w && tc.reachable(v, w))
+        for (int v = 0; v < g.V(); v++) {
+            for (int w = 0; w < g.V(); w++) {
+                if (v != w && tc.reachable(v, w))
                     closure.addEdge(v, w);
             }
         }
         return closure;
     }
+
     static Graph spanningTreeUndirectedOrThrow(Graph g) {
         CC cc = new CC(g);
-        if (cc.count() != 1) throw new IllegalStateException("Graph not connected.");
+        if (cc.count() != 1)
+            throw new IllegalStateException("Graph not connected.");
 
         int s = 0;
         boolean[] marked = new boolean[g.V()];
         int[] parent = new int[g.V()];
-        for (int i = 0; i < parent.length; i++) parent[i] = -1;
+        for (int i = 0; i < parent.length; i++)
+            parent[i] = -1;
 
         Queue<Integer> q = new Queue<>();
         q.enqueue(s);
@@ -107,20 +116,22 @@ public class ThirdAssignment {
 
         Graph tree = new Graph(g.V());
         for (int v = 0; v < g.V(); v++) {
-            if (v == s) continue;
+            if (v == s)
+                continue;
             tree.addEdge(parent[v], v);
         }
         return tree;
     }
 
-
     static Digraph rootedSpanningTreeOrNull(Digraph g) {
         Integer root = vertexThatReachesAll(g);
-        if (root == null) return null;
+        if (root == null)
+            return null;
 
         boolean[] marked = new boolean[g.V()];
         int[] parent = new int[g.V()];
-        for (int i = 0; i < parent.length; i++) parent[i] = -1;
+        for (int i = 0; i < parent.length; i++)
+            parent[i] = -1;
 
         Queue<Integer> q = new Queue<>();
         q.enqueue(root);

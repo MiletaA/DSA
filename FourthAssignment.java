@@ -4,41 +4,43 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.DijkstraUndirectedSP;
 
-
 public class FourthAssignment {
-    static EdgeWeightedGraph read(String path){
+    static EdgeWeightedGraph read(String path) {
         return new EdgeWeightedGraph(new In(path));
     }
-    static int maxIncident(EdgeWeightedGraph g){
+
+    static int maxIncident(EdgeWeightedGraph g) {
         double best = -1;
         int vBest = -1;
-        for(int v = 0; v < g.V(); v++){
+        for (int v = 0; v < g.V(); v++) {
             double sum = 0;
-            for(Edge e : g.adj(v)){
+            for (Edge e : g.adj(v)) {
                 sum += e.weight();
             }
-            if(sum > best){
+            if (sum > best) {
                 best = sum;
                 vBest = v;
             }
         }
         return vBest;
     }
-    static int minIncident(EdgeWeightedGraph g){
+
+    static int minIncident(EdgeWeightedGraph g) {
         double best = Double.POSITIVE_INFINITY;
         int vBest = -1;
-        for(int v = 0; v < g.V(); v++){
+        for (int v = 0; v < g.V(); v++) {
             double sum = 0;
-            for(Edge e : g.adj(v)){
+            for (Edge e : g.adj(v)) {
                 sum += e.weight();
             }
-            if(sum < best){
+            if (sum < best) {
                 best = sum;
                 vBest = v;
             }
         }
         return vBest;
     }
+
     static void printAllShortestPaths(EdgeWeightedGraph g, int s) {
         DijkstraUndirectedSP sp = new DijkstraUndirectedSP(g, s);
         for (int v = 0; v < g.V(); v++) {
@@ -49,11 +51,13 @@ public class FourthAssignment {
             }
         }
     }
+
     static boolean canDiveTotalWithin(EdgeWeightedGraph g, int s, int t, double n) {
         DijkstraUndirectedSP sp = new DijkstraUndirectedSP(g, s);
         return sp.hasPathTo(t) && sp.distTo(t) <= n;
     }
-static boolean canDiveEachEdgeWithin(EdgeWeightedGraph g, int s, int t, double n) {
+
+    static boolean canDiveEachEdgeWithin(EdgeWeightedGraph g, int s, int t, double n) {
         boolean[] marked = new boolean[g.V()];
         Queue<Integer> q = new Queue<>();
         q.enqueue(s);
@@ -76,9 +80,11 @@ static boolean canDiveEachEdgeWithin(EdgeWeightedGraph g, int s, int t, double n
         }
         return false;
     }
+
     static boolean canDiveSurfaceEvenOnly(EdgeWeightedGraph g, int s, int t, double n) {
         boolean[] isSurface = new boolean[g.V()];
-        for (int v = 0; v < g.V(); v++) isSurface[v] = (v % 2 == 0);
+        for (int v = 0; v < g.V(); v++)
+            isSurface[v] = (v % 2 == 0);
         isSurface[s] = true;
         isSurface[t] = true;
 
@@ -89,7 +95,8 @@ static boolean canDiveEachEdgeWithin(EdgeWeightedGraph g, int s, int t, double n
 
         while (!q.isEmpty()) {
             int cur = q.dequeue();
-            if (cur == t) return true;
+            if (cur == t)
+                return true;
 
             DijkstraUndirectedSP sp = new DijkstraUndirectedSP(g, cur);
             for (int v = 0; v < g.V(); v++) {
@@ -125,4 +132,4 @@ static boolean canDiveEachEdgeWithin(EdgeWeightedGraph g, int s, int t, double n
         System.out.println("Dive (Each Edge <= n): " + canDiveEachEdgeWithin(g, s, t, n));
         System.out.println("Dive (Surface even, segment <= n): " + canDiveSurfaceEvenOnly(g, s, t, n));
     }
-    }
+}
